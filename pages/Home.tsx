@@ -25,6 +25,8 @@ export default function Home() {
     },
   ];
 
+  
+
   return (
     <div className="flex min-h-[calc(100vh-60px)] w-full flex-col items-center sm:min-h-[calc(100vh-68px)]">
       <section className="min-h-[calc(100vh-60px)] overflow-hidden sm:min-h-[calc(100vh-68px)] lg:min-h-screen">
@@ -103,7 +105,7 @@ export default function Home() {
         </Link>
 
         <video
-          src="../../src/assets/videos/teacher.mp4"
+          src="https://res.cloudinary.com/davlsnwbk/video/upload/v1775995233/teacher_zmpahq.mp4"
           autoPlay
           loop
           muted
