@@ -44,13 +44,11 @@ export default function CourseCard({ course }: { course: Course }) {
           {course.description}
         </p>
 
-{/* instructors */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-black/5 pt-4 text-sm text-[#5D5A6F]">
           <p className="font-medium">
             Instructor:{" "}
             <span className="font-semibold">{course.instructor}</span>
           </p>
-          {/* rating */}
           <div className="flex items-center gap-2">
             <Star size={16} className="text-amber-500" fill="currentColor" />
             <span className="font-semibold text-[#1f2029]">
