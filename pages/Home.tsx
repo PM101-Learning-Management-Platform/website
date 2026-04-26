@@ -1,3 +1,4 @@
+import React from "react";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import heroImage from "../src/assets/images/learning.jpg";
@@ -24,8 +25,6 @@ export default function Home() {
       title: "Recorded Classes",
     },
   ];
-
-  
 
   return (
     <div className="flex min-h-[calc(100vh-60px)] w-full flex-col items-center sm:min-h-[calc(100vh-68px)]">
