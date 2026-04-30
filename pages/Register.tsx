@@ -1,38 +1,44 @@
 import { Link } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useSaveUser } from "../hooks/useSaveUser";
+import { useRegister } from "../hooks/useFetch";
 import {
   registerSchema,
   type RegisterFormData,
 } from "../validators/registerValidator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
-import { useSetLoggedIn } from "../hooks/useSetLoggedIn";
+import SuccessMessage from "../components/SuccessMessage";
+import { useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 
 export default function Register() {
-  const Navigate = useNavigate();
-  const { setLoggedIn } = useSetLoggedIn();
+  const { Register } = useRegister();
 
-  const { saveUser } = useSaveUser();
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-    defaultValues: {
-      role: "student",
-    },
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
     resolver: zodResolver(registerSchema),
   });
 
   const onsubmit: SubmitHandler<RegisterFormData> = (data) => {
-    setLoggedIn()
-    saveUser(data);
-    Navigate("/");
-    window.location.reload();
+    Register(data);
+    setShowSuccess(true);
   };
 
   return (
@@ -40,6 +46,11 @@ export default function Register() {
       onSubmit={handleSubmit(onsubmit)}
       className="mx-auto flex min-h-[calc(100vh-60px)] w-full max-w-7xl items-center justify-center px-4 py-10 sm:min-h-[calc(100vh-68px)] sm:px-6 sm:py-14 md:px-8 lg:px-20 lg:py-20"
     >
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <SuccessMessage message="Account created successfully!" />
+        </div>
+      )}
       <div className="w-full max-w-md rounded-3xl border border-black/5 bg-white/80 p-6 shadow-[0_20px_80px_-30px_rgba(124,92,255,0.35)] backdrop-blur-sm sm:p-8">
         <div className="mb-6">
           <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#0A033C] sm:text-3xl">
@@ -58,17 +69,15 @@ export default function Register() {
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-[#0A033C]">
-              Full name
-            </label>
+            <label className="text-sm font-semibold text-[#0A033C]">Name</label>
             <input
-              {...register("fullName")}
+              {...register("name")}
               placeholder="John Doe"
               autoComplete="name"
               className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
             />
-            {errors.fullName && (
-              <p className="text-red-500">{errors.fullName.message}</p>
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
             )}
           </div>
 
@@ -88,28 +97,25 @@ export default function Register() {
             )}
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-[#0A033C]">Role</label>
-            <select
-              {...register("role")}
-              className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
-            >
-              <option value="student">Student</option>
-              <option value="instructor">Instructor</option>
-            </select>
-          </div>
-
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 relative">
             <label className="text-sm font-semibold text-[#0A033C]">
               Password
             </label>
-            <input
-              {...register("password")}
-              type="password"
-              autoComplete="new-password"
-              placeholder="At least 8 characters"
-              className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
-            />
+            <div className="relative">
+              <input
+                {...register("password")}
+                autoComplete="new-password"
+                placeholder="At least 6 characters"
+                className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 pr-10 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
+                type={showPassword ? "text" : "password"}
+              />
+              <div
+                onClick={toggleShowPassword}
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#8b8aa1]"
+              >
+                {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
+              </div>
+            </div>
             {errors.password && (
               <p className="text-red-500">{errors.password.message}</p>
             )}
@@ -119,13 +125,21 @@ export default function Register() {
             <label className="text-sm font-semibold text-[#0A033C]">
               Confirm password
             </label>
-            <input
-              {...register("confirmPassword")}
-              type="password"
-              autoComplete="new-password"
-              placeholder="Re-enter password"
-              className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
-            />
+            <div className="relative">
+              <input
+                {...register("confirmPassword")}
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                placeholder="Re-enter password"
+                className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
+              />
+              <div
+                onClick={toggleShowConfirmPassword}
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#8b8aa1]"
+              >
+                {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
+              </div>
+            </div>
             {errors.confirmPassword && (
               <p className="text-red-500">{errors.confirmPassword.message}</p>
             )}

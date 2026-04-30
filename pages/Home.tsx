@@ -1,4 +1,3 @@
-import React from "react";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import heroImage from "../src/assets/images/learning.jpg";
@@ -79,7 +78,7 @@ export default function Home() {
               <img
                 src={heroImage}
                 alt="Students learning online"
-                className="aspect-4/3 w-full object-cover sm:aspect-auto sm:h-full sm:min-h-[280px] lg:min-h-[360px]"
+                className="aspect-4/3 w-full object-cover sm:aspect-auto sm:h-full sm:min-h-70 lg:min-h-90"
               />
             </div>
           </div>

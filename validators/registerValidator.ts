@@ -1,17 +1,16 @@
 import z from "zod";
 
 export const registerSchema = z.object({
-  fullName: z.string().min(1, { message: "First name is required" }),
+  name: z.string().min(1, { message: "First name is required" }),
   email: z.email(),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
+    .min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
-  role: z.enum(["student", "instructor"])
+    .min(6, { message: "Password must be at least 6 characters" })
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "كلمة المرور غير متطابقة",
+  message: "Passwords do not match",
   path: ["confirmPassword"],
 });
 

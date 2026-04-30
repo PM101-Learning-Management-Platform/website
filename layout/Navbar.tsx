@@ -1,18 +1,10 @@
-import { Menu, ShoppingCart, User, X } from "lucide-react";
-import { useState, useEffect} from "react";
+import { Menu, X } from "lucide-react";
+import { useState} from "react";
 import { Link } from "react-router-dom";
-import { useSetLoggedIn } from "../hooks/useSetLoggedIn";
 import logo from "../src/assets/images/Logo.png"; 
 
 function Navbar() {
-  const { isLoggedIn } = useSetLoggedIn();
-  const [loggedIn, setLoggedIn] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setLoggedIn(isLoggedIn)
-  }, [isLoggedIn])
-
 
   const navLinks = [
     {
@@ -63,26 +55,6 @@ function Navbar() {
           ))}
         </ul>
 
-        {loggedIn ? (
-          <div className="hidden items-center gap-4 md:flex lg:gap-6">
-            <Link
-              to="/cart"
-              className="flex items-center gap-2 text-[15px] font-medium text-[#1f2029]"
-            >
-              <ShoppingCart size={20} color="#c6592a" strokeWidth={2.5} />
-              <span className="hidden lg:inline">Cart</span>
-            </Link>
-            <Link
-              to="/account"
-              className="flex items-center gap-2 text-[15px] font-medium text-[#1f2029]"
-            >
-              <User size={20} color="#c6592a" strokeWidth={2.5} />
-              <span className="hidden lg:inline">
-                Account
-              </span>
-            </Link>
-          </div>
-        ) : (
           <div className="hidden items-center gap-4 md:flex">
             <Link
               to="/login"
@@ -97,7 +69,6 @@ function Navbar() {
               Register
             </Link>
           </div>
-        )}
 
         <button
           type="button"
@@ -130,26 +101,6 @@ function Navbar() {
             ))}
           </ul>
           <div className="mt-4 flex flex-col gap-2 border-t border-black/5 pt-4">
-            {loggedIn ? (
-              <>
-                <Link
-                  to="/cart"
-                  className="flex items-center gap-2 rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5"
-                  onClick={closeMenu}
-                >
-                  <ShoppingCart size={20} color="#c6592a" strokeWidth={2.5} />
-                  Cart
-                </Link>
-                <Link
-                  to="/account"
-                  className="flex items-center gap-2 rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5"
-                  onClick={closeMenu}
-                >
-                  <User size={20} color="#c6592a" strokeWidth={2.5} />
-                  Account
-                </Link>
-              </>
-            ) : (
               <>
                 <Link
                   to="/login"
@@ -166,7 +117,6 @@ function Navbar() {
                   Register
                 </Link>
               </>
-            )}
           </div>
         </div>
       ) : null}

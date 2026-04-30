@@ -2,18 +2,12 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema,type loginFormData } from "../validators/loginValidator";
-import { useSaveUser } from "../hooks/useSaveUser";
+import { useLogin } from "../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
-import { useSetLoggedIn } from "../hooks/useSetLoggedIn"
 
-type LoginPageProps = {
-  onLoginSuccess: () => void;
-};
-
-export default function Login({ onLoginSuccess }: LoginPageProps) {
+export default function Login() {
   const Navigate = useNavigate();
-  const { loginUser } = useSaveUser();
-  const { setLoggedIn } = useSetLoggedIn();
+  const { Login } = useLogin();
 
   const {
     register,
@@ -27,17 +21,14 @@ export default function Login({ onLoginSuccess }: LoginPageProps) {
   });
 
   const onSubmit = (data: loginFormData) => {
-    const user = loginUser(data.email);
+    const user = Login(data);
 
     if (!user) {
       setError("email", { message: "Invalid email or password" });
       return;
     }
 
-    setLoggedIn()
-    Navigate("/");
-    window.location.reload();
-    onLoginSuccess();
+    Navigate("/dashboard");
   };
 
   return (
