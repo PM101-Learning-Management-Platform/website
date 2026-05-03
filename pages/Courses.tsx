@@ -54,7 +54,7 @@ export default function CoursesPage() {
             </p>
           </div>
 
-          <div className="grid w-full gap-3 sm:grid-cols-2 md:w-[440px]">
+          <div className="grid w-full gap-3 sm:grid-cols-2 md:w-110">
             <label className="flex items-center gap-3 rounded-2xl border border-black/5 bg-white/80 px-4 py-3 shadow-sm">
               <Search size={18} className="shrink-0 text-[#7c5cff]" />
               <input

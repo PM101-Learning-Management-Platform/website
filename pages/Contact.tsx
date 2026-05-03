@@ -61,7 +61,7 @@ export default function Contact() {
                       onChange={onChange}
                       required
                       placeholder="Your name"
-                      className="min-h-[48px] rounded-2xl border border-black/10 bg-white/90 px-4 text-sm font-medium text-[#1f2029] outline-none transition focus:border-[#7c5cff]/40 focus:ring-2 focus:ring-[#7c5cff]/20 sm:text-[15px]"
+                      className="min-h-12 rounded-2xl border border-black/10 bg-white/90 px-4 text-sm font-medium text-[#1f2029] outline-none transition focus:border-[#7c5cff]/40 focus:ring-2 focus:ring-[#7c5cff]/20 sm:text-[15px]"
                     />
                   </label>
                   <label className="grid gap-2">
@@ -75,7 +75,7 @@ export default function Contact() {
                       onChange={onChange}
                       required
                       placeholder="you@example.com"
-                      className="min-h-[48px] rounded-2xl border border-black/10 bg-white/90 px-4 text-sm font-medium text-[#1f2029] outline-none transition focus:border-[#7c5cff]/40 focus:ring-2 focus:ring-[#7c5cff]/20 sm:text-[15px]"
+                      className="min-h-12 rounded-2xl border border-black/10 bg-white/90 px-4 text-sm font-medium text-[#1f2029] outline-none transition focus:border-[#7c5cff]/40 focus:ring-2 focus:ring-[#7c5cff]/20 sm:text-[15px]"
                     />
                   </label>
                 </div>
@@ -90,7 +90,7 @@ export default function Contact() {
                     onChange={onChange}
                     required
                     placeholder="How can we help?"
-                    className="min-h-[48px] rounded-2xl border border-black/10 bg-white/90 px-4 text-sm font-medium text-[#1f2029] outline-none transition focus:border-[#7c5cff]/40 focus:ring-2 focus:ring-[#7c5cff]/20 sm:text-[15px]"
+                    className="min-h-12 rounded-2xl border border-black/10 bg-white/90 px-4 text-sm font-medium text-[#1f2029] outline-none transition focus:border-[#7c5cff]/40 focus:ring-2 focus:ring-[#7c5cff]/20 sm:text-[15px]"
                   />
                 </label>
 
