@@ -30,12 +30,12 @@
   },
   "include": [
     "src",
-    "hooks",
+    "api",
     "components",
     "layout",
     "pages",
     "validators",
     "types",
     "redux"
-  ]
+, "api/vite-env.d.ts"  ]
 }

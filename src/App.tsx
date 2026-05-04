@@ -10,7 +10,6 @@ import Footer from "../layout/Footer";
 import ScrollToTop from "../components/ScrollToTop";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import VerifyCode from "../pages/VerifyCode";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 
@@ -27,7 +26,6 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/" element={<Home />} />

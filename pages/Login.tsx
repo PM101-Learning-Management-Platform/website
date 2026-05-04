@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema,type loginFormData } from "../validators/loginValidator";
-import { useLogin } from "../hooks/useFetch";
+import { Auth } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import { setToken } from "../lib/setToken";
 
 export default function Login() {
   const Navigate = useNavigate();
-  const { Login } = useLogin();
+  const { Login } = Auth();
 
   const {
     register,
@@ -20,15 +21,19 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: loginFormData) => {
-    const user = Login(data);
+  const onSubmit = async (data: loginFormData) => {
+    try {
+      const user = await Login(data);
 
-    if (!user) {
+      if (!user) {
+        setError("email", { message: "Invalid email or password" });
+        return;
+      }
+      setToken(user.token);
+      Navigate("/dashboard");
+    } catch {
       setError("email", { message: "Invalid email or password" });
-      return;
     }
-
-    Navigate("/dashboard");
   };
 
   return (
@@ -79,6 +84,13 @@ export default function Login() {
             Login
           </button>
         </div>
+
+        <p className="mt-4 text-center text-sm text-[#5D5A6F]">
+          Forgot your password?{" "}
+          <Link to="/forgot-password" className="font-semibold text-[#fb6d56] hover:underline">
+            Reset it
+          </Link>
+        </p>
       </form>
     </div>
   );

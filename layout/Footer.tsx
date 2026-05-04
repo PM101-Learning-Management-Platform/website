@@ -124,6 +124,7 @@ export default function Footer() {
           <div className="rounded-lg">
             <img
               className="w-20 h-15 object-cover"
+              loading="lazy"
               src={logo} alt="Logo" />
           </div>
         </Link>

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useRegister } from "../hooks/useFetch";
+import { Auth } from "../api/auth";
 import {
   registerSchema,
   type RegisterFormData,
@@ -11,7 +11,7 @@ import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 
 export default function Register() {
-  const { Register } = useRegister();
+  const { Register } = Auth();
 
   const [showSuccess, setShowSuccess] = useState(false);
 

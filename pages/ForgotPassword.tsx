@@ -1,19 +1,33 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Auth } from "../api/auth";
+import SuccessMessage from "../components/SuccessMessage";
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
+export default function ForgotPassword() {
+  const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const { ForgotPassword } = Auth();
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    ForgotPassword({ email })
+      .then(() => {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          navigate("/reset-password");
+        }, 3000);
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
     setIsSubmitted(true);
   };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        {/* Icon */}
         <div className="text-center mb-6">
           <div className="mx-auto w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-4">
             <svg
@@ -30,68 +44,62 @@ const ForgotPassword = () => {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Forgot Password?</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Forgot Password?
+          </h2>
           <p className="text-gray-600">
             {isSubmitted
-              ? 'We\'ve sent a verification code to your email'
-              : 'Enter your email to receive a verification code'}
+              ? "We've sent a verification code to your email"
+              : "Enter your email to receive a verification code"}
           </p>
         </div>
 
-        {!isSubmitted ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                placeholder="your.email@example.com"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg"
-            >
-              Send Verification Code
-            </button>
-          </form>
-        ) : (
-          <div className="text-center space-y-4">
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-green-800 text-sm">
-                ✓ Verification code sent! Please check your inbox.
-              </p>
-            </div>
-            <Link
-              to="/verify-code"
-              className="inline-block w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200"
-            >
-              Enter Verification Code
-            </Link>
-            <button
-              onClick={() => setIsSubmitted(false)}
-              className="text-indigo-600 hover:text-indigo-700 font-medium"
-            >
-              Resend Code
-            </button>
+        {isSubmitted && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+            onClick={() => setIsSubmitted(false)}
+          >
+            <SuccessMessage message="Verification code sent! Please check your inbox.\nPlease wait, you will be redirected in a few seconds." />
           </div>
         )}
 
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              placeholder="your.email@example.com"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg"
+          >
+            Send Verification Code
+          </button>
+        </form>
+
         <div className="mt-6 text-center">
-          <Link to="/login" className="text-gray-600 hover:text-gray-700 font-medium">
+          <Link
+            to="/login"
+            className="text-gray-600 hover:text-gray-700 font-medium"
+          >
             ← Back to Login
           </Link>
         </div>
       </div>
     </div>
   );
-};
-
-export default ForgotPassword;
+}

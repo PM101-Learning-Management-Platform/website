@@ -79,6 +79,7 @@ export default function Home() {
                 src={heroImage}
                 alt="Students learning online"
                 className="aspect-4/3 w-full object-cover sm:aspect-auto sm:h-full sm:min-h-70 lg:min-h-90"
+                loading="lazy"
               />
             </div>
           </div>
