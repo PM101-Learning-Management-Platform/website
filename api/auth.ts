@@ -16,7 +16,7 @@ export function Auth() {
   const Register = async (userData: RegisterFormData) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/v1/auth/register`,
+        `${API_URL}/auth/register`,
         userData,
         {
           headers: {
@@ -25,6 +25,7 @@ export function Auth() {
         },
       );
 
+      console.log("Registration response:", response.data);
       return response.data;
     } catch (error) {
       console.error("Registration error:", error);
@@ -36,7 +37,7 @@ export function Auth() {
   const Login = async (userData: { email: string; password: string }) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/v1/auth/login`,
+        `${API_URL}/auth/login`,
         userData,
         {
           headers: {
@@ -58,7 +59,7 @@ export function Auth() {
   const ForgotPassword = async (userData: { email: string }) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/v1/auth/forgot-password`,
+        `${API_URL}/auth/forgot-password`,
         userData,
         {
           headers: {
@@ -81,7 +82,7 @@ export function Auth() {
   }) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/v1/auth/reset-password`,
+        `${API_URL}/auth/reset-password`,
         userData,
         {
           headers: {

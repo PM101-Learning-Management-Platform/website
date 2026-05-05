@@ -1,42 +1,39 @@
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
-import { courses } from "../src/assets/data/courses";
+import { useMemo, useState, useEffect } from "react";
 import CourseCard from "../components/CourseCard";
 import Pagination from "../components/Pagination";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { getAllCourses } from "../redux/slices/courses";
+import Loader from "../components/Loader";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function CoursesPage() {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useAppDispatch();
+  const { courses, loading, error } = useAppSelector((state) => state.courses);
 
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    for (const c of courses) set.add(c.category);
-    return ["All", ...Array.from(set).sort()];
-  }, []);
+  useEffect(() => {
+    dispatch(getAllCourses());
+  }, [dispatch]);
 
-  const itemsPerPage = 3
+  const itemsPerPage = 5
   const pages = new Array(Math.ceil(courses.length / itemsPerPage)).fill(0).map((_, index) => index + 1)
 
   const coursesPerPage = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return courses.slice(start, end);
-  }, [currentPage]);
+  }, [currentPage, courses]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return coursesPerPage.filter((c) => {
-      const matchesCategory = category === "All" ? true : c.category === category;
-      const matchesQuery =
-        q.length === 0
-          ? true
-          : `${c.title} ${c.description} ${c.instructor} ${c.level} ${c.category}`
-              .toLowerCase()
-              .includes(q);
-      return matchesCategory && matchesQuery;
-    });
-  }, [coursesPerPage, category, query]);
+  const filteredCourses = useMemo(() => {
+    return courses.filter((course) =>
+      course.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, courses]);
+
+  if (loading) return <Loader />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="w-full px-4 py-10 sm:px-6 sm:py-12 md:py-14">
@@ -54,48 +51,33 @@ export default function CoursesPage() {
             </p>
           </div>
 
-          <div className="grid w-full gap-3 sm:grid-cols-2 md:w-110">
-            <label className="flex items-center gap-3 rounded-2xl border border-black/5 bg-white/80 px-4 py-3 shadow-sm">
+          <div className="flex w-full justify-end">
+            <label className="flex w-full max-w-md items-center gap-3 rounded-2xl border border-black/5 bg-white/80 px-4 py-3 shadow-sm">
               <Search size={18} className="shrink-0 text-[#7c5cff]" />
               <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search courses..."
                 className="min-w-0 flex-1 bg-transparent text-sm font-medium text-[#1f2029] placeholder:text-[#a0a0aa] outline-none sm:text-[15px]"
               />
-            </label>
-
-            <label className="rounded-2xl border border-black/5 bg-white/80 px-4 py-3 shadow-sm">
-              <span className="sr-only">Category</span>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-transparent text-sm font-semibold text-[#1f2029] outline-none sm:text-[15px]"
-              >
-                {categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
             </label>
           </div>
         </div>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((course) => (
+          {filteredCourses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>
 
-        {filtered.length === 0 ? (
+        {coursesPerPage.length === 0 ? (
           <div className="mt-10 rounded-3xl border border-black/5 bg-white/70 p-8 text-center">
             <p className="text-lg font-semibold text-[#0A033C]">No courses found.</p>
             <p className="mt-2 text-sm text-[#5D5A6F]">Try a different search or category.</p>
           </div>
         ) : null}
       </div>
-      {filtered.length > 0 ? <Pagination pages={pages} setCurrentPage={setCurrentPage}/> : null}
+      {coursesPerPage.length > 0 ? <Pagination pages={pages} setCurrentPage={setCurrentPage}/> : null}
     </div>
   );
 }
