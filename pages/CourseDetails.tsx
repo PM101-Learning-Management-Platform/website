@@ -1,20 +1,30 @@
 import { ArrowLeft, Clock3, Layers3, Star, Users2 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { courses } from "../src/assets/data/courses";
-
-type Course = (typeof courses)[number];
+import type { Course } from "../types/courses";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { getCourseById } from "../redux/slices/courses";
+import { useEffect } from "react";
+import Loader from "../components/Loader";
+import ErrorMessage from "../components/ErrorMessage";
 
 function formatPrice(course: Course) {
-  if (course.isFree || course.price === 0) return "Free";
+  if (course.price === 0) return "Free";
   return `$${course.price}`;
 }
 
 export default function CourseDetails() {
+  const dispatch = useAppDispatch();
   const { id } = useParams();
-  const courseId = Number(id);
-  const course = courses.find((c) => c.id === courseId);
+  const { course, error, loading } = useAppSelector((state) => state.courses);
 
-  if (!Number.isFinite(courseId) || !course) {
+  useEffect(() => {
+    if (id) dispatch(getCourseById(id));
+  }, [id, dispatch]);
+
+  if (loading) return <Loader />;
+  if (error) return <ErrorMessage message={error} />;
+
+  if (!course) {
     return (
       <div className="w-full px-4 py-12 sm:px-6 sm:py-16">
         <div className="mx-auto w-full max-w-7xl">
@@ -55,9 +65,6 @@ export default function CourseDetails() {
                 <span className="rounded-full bg-[#0A033C]/90 px-3 py-1 text-xs font-semibold text-white">
                   {course.level}
                 </span>
-                <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-[#7c5cff]">
-                  {course.category}
-                </span>
                 <span className="rounded-full bg-[#fb6d56]/10 px-3 py-1 text-xs font-semibold text-[#fb6d56]">
                   {formatPrice(course)}
                 </span>
@@ -70,9 +77,6 @@ export default function CourseDetails() {
                 {course.description}
               </p>
 
-              <p className="mt-4 text-sm font-medium text-[#5D5A6F] sm:text-[15px]">
-                Instructor: <span className="font-semibold text-[#0A033C]">{course.instructor}</span>
-              </p>
             </div>
 
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap lg:w-auto lg:flex-col lg:items-end">
@@ -99,7 +103,7 @@ export default function CourseDetails() {
           <div className="lg:col-span-7">
             <div className="overflow-hidden rounded-3xl border border-black/5 bg-white/80 shadow-sm">
               <img
-                src={course.thumbnail}
+                src={course.thumbnailUrl || ""}
                 alt={course.title}
                 className="h-56 w-full object-cover sm:h-72"
                 loading="lazy"
@@ -132,7 +136,7 @@ export default function CourseDetails() {
                     Duration
                   </p>
                   <p className="text-sm font-semibold text-[#0A033C] sm:text-[15px]">
-                    {course.duration}h
+                    {course.duration} H
                   </p>
                 </div>
 
