@@ -7,7 +7,7 @@ export type Course = {
   duration: number,
   level: string,
   price: number,
-  lessons: number,
+  lessons: [],
   studentsCount: number,
   rating: number,
   createdAt: string,
