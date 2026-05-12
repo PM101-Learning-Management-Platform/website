@@ -36,6 +36,7 @@
     "pages",
     "validators",
     "types",
+    "lib",
     "redux"
-, "api/vite-env.d.ts"  ]
+  ]
 }

@@ -48,7 +48,7 @@ export default function Register() {
     >
       {showSuccess && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <SuccessMessage message="Account created successfully!" />
+          <SuccessMessage message="Please check your email to verify your account." />
         </div>
       )}
       <div className="w-full max-w-md rounded-3xl border border-black/5 bg-white/80 p-6 shadow-[0_20px_80px_-30px_rgba(124,92,255,0.35)] backdrop-blur-sm sm:p-8">

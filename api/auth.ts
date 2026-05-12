@@ -1,5 +1,6 @@
+import { setToken, setUser } from "../lib/setToken";
+import axiosInstance from "../lib/axiosInstance";
 import axios from "axios";
-import { getToken } from '../lib/setToken';
 
 export type RegisterFormData = {
   name: string;
@@ -9,70 +10,32 @@ export type RegisterFormData = {
 };
 
 export function Auth() {
+
   const API_URL = import.meta.env.VITE_API_URL as string;
-  const token = getToken();
 
   // Register
   const Register = async (userData: RegisterFormData) => {
-    try {
-      const response = await axios.post(
-        `${API_URL}/auth/register`,
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      console.log("Registration response:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Registration error:", error);
-      throw error;
-    }
+    const response = await axiosInstance.post(`/auth/register`, userData);
+    return response.data;
   };
 
   // Login
   const Login = async (userData: { email: string; password: string }) => {
-    try {
-      const response = await axios.post(
-        `${API_URL}/auth/login`,
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      const data = await response.data;
-
-      return data;
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
-    }
+    const response = await axiosInstance.post(`/auth/login`, userData,
+      {
+        withCredentials: true,
+      }
+    );
+    const data = response.data;
+    setToken(data.data.accessToken);
+    setUser(data.data.user);
+    return data;
   };
 
   // forgot password
   const ForgotPassword = async (userData: { email: string }) => {
-    try {
-      const response = await axios.post(
-        `${API_URL}/auth/forgot-password`,
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error("Forgot Password error:", error);
-      throw error;
-    }
+    const response = await axiosInstance.post(`/auth/forgot-password`, userData);
+    return response.data;
   };
 
   // Reset Password
@@ -80,24 +43,44 @@ export function Auth() {
     password: string;
     confirmPassword: string;
   }) => {
-    try {
-      const response = await axios.post(
-        `${API_URL}/auth/reset-password`,
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error("Reset Password error:", error);
-      throw error;
-    }
+    const response = await axiosInstance.post(`/auth/reset-password`, userData);
+    return response.data;
   };
 
-  return { Login, Register, ForgotPassword, ResetPassword };
+  // Restore Account - Send verification code
+  const RestoreAccount = async (userData: { email: string }) => {
+    const response = await axiosInstance.post(`/auth/restore-account`,userData);
+    return response.data;
+  };
+
+  // Verify Restore Code
+  const VerifyRestoreCode = async (userData: {
+    email: string;
+    code: string;
+  }) => {
+    const response = await axiosInstance.post(`/auth/verify-restore-code`,userData);
+    return response.data;
+  };
+
+  // get refresh toke
+  const refreshToken = async () => {
+  const response = await axios.post(
+    `${API_URL}/auth/refresh`,
+    {},
+    { withCredentials: true }
+  );
+  const data = response.data;
+  setToken(data.data.accessToken);
+  return data;
+};
+
+  return {
+    Login,
+    Register,
+    ForgotPassword,
+    ResetPassword,
+    RestoreAccount,
+    VerifyRestoreCode,
+    refreshToken,
+  };
 }

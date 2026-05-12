@@ -1,14 +1,27 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link,useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema,type loginFormData } from "../validators/loginValidator";
 import { Auth } from "../api/auth";
-import { useNavigate } from "react-router-dom";
-import { setToken } from "../lib/setToken";
+import { setToken, setUser } from "../lib/setToken";
+import { Eye, EyeClosed } from "lucide-react";
+// import { useContext } from "react";
+// import { AuthContext } from "../context/AuthContext";
+import avatar from "../src/assets/images/avatar.jpg";
 
 export default function Login() {
   const Navigate = useNavigate();
   const { Login } = Auth();
+
+  // Password Visibility
+  const [showPassword, setShowPassword] = useState(false);
+
+  // const context = useContext(AuthContext);
+  // if (!context) {
+  //   throw new Error("Auth hook must be used within an AuthProvider");
+  // }
+  // const { setUser } = context;
 
   const {
     register,
@@ -21,16 +34,28 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const onSubmit = async (data: loginFormData) => {
     try {
-      const user = await Login(data);
+      const res = await Login(data);
 
-      if (!user) {
-        setError("email", { message: "Invalid email or password" });
+      if (!res) {
+        setError("email", { message: res.message });
         return;
       }
-      setToken(user.token);
-      Navigate("/dashboard");
+      setToken(res.data.accessToken);
+      const user = res.data.user;
+      setUser({
+        email: user.email,
+        name: user.name,
+        id: user.id,
+        role: user.role,
+        avatar: user.avatar || avatar,
+      });
+      Navigate("/");
     } catch {
       setError("email", { message: "Invalid email or password" });
     }
@@ -65,16 +90,22 @@ export default function Login() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="relative space-y-1.5">
             <label className="text-sm font-semibold text-[#0A033C]">Password</label>
             <input
               {...register("password")}
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               placeholder="Your password"
-              className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
+              className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 pr-10 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
             />
-          </div>
+            <div
+                onClick={toggleShowPassword}
+                className="absolute right-3 top-1/2 cursor-pointer text-[#8b8aa1]"
+              >
+                {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
+              </div>
+            </div>
             {errors.email && <p className="text-red-500 text-center">{errors.email?.message}</p>}
 
           <button
@@ -89,6 +120,13 @@ export default function Login() {
           Forgot your password?{" "}
           <Link to="/forgot-password" className="font-semibold text-[#fb6d56] hover:underline">
             Reset it
+          </Link>
+        </p>
+
+        <p className="mt-2 text-center text-sm text-[#5D5A6F]">
+          Need to restore your account?{" "}
+          <Link to="/restore-account" className="font-semibold text-[#fb6d56] hover:underline">
+            Restore it
           </Link>
         </p>
       </form>
