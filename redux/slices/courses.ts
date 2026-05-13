@@ -8,36 +8,39 @@ import {
 } from "../../api/courses";
 import type { Course } from "../../types/courses";
 
-export const getAllCourses = createAsyncThunk("courses/getAllCourses", async () => {
-  return await getCourses();
-});
+export const getAllCourses = createAsyncThunk(
+  "courses/getAllCourses",
+  async () => {
+    return await getCourses();
+  },
+);
 
 export const getCourseById = createAsyncThunk(
   "courses/getCourseById",
   async (courseId: string) => {
     return await getCourse(courseId);
-  }
+  },
 );
 
 export const createNewCourse = createAsyncThunk(
   "courses/createNewCourse",
   async (courseData: Course) => {
     return await createCourse(courseData);
-  }
+  },
 );
 
 export const updateCourseById = createAsyncThunk(
   "courses/updateCourseById",
   async (courseData: Course) => {
     return await updateCourse(courseData.id, courseData);
-  }
+  },
 );
 
 export const deleteCourseById = createAsyncThunk(
   "courses/deleteCourseById",
   async (courseId: string) => {
     return await deleteCourse(courseId);
-  }
+  },
 );
 
 interface CoursesState {
@@ -77,7 +80,9 @@ const coursesSlice = createSlice({
 
       .addCase(updateCourseById.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.courses.findIndex(c => c.id === action.payload.id);
+        const index = state.courses.findIndex(
+          (c) => c.id === action.payload.id,
+        );
         if (index !== -1) {
           state.courses[index] = action.payload;
         }
@@ -85,7 +90,7 @@ const coursesSlice = createSlice({
 
       .addCase(deleteCourseById.fulfilled, (state, action) => {
         state.loading = false;
-        state.courses = state.courses.filter(c => c.id !== action.meta.arg);
+        state.courses = state.courses.filter((c) => c.id !== action.meta.arg);
       })
 
       .addMatcher(
@@ -93,7 +98,7 @@ const coursesSlice = createSlice({
         (state) => {
           state.loading = true;
           state.error = null;
-        }
+        },
       )
 
       .addMatcher(isRejected, (state, action) => {

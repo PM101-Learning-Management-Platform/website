@@ -1,11 +1,21 @@
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { useState} from "react";
-import { Link } from "react-router-dom";
-import logo from "../src/assets/images/Logo.png"; 
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../src/assets/images/Logo.png";
+// import { useContext } from "react";
+// import { AuthContext } from "../context/AuthContext";
+import { getToken, removeToken, getUser, removeUser } from "../lib/setToken";
 
-function Navbar() {
+export default function Navbar() {
+  const Navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [userMenu, setUserMenu] = useState(false);
+  // const context = useContext(AuthContext);
+  const user = getUser();
+  // if (!context) {
+  //   throw new Error("Navbar must be used within an AuthProvider");
+  // }
+  // const { setUser } = context;
   const navLinks = [
     {
       name: "Home",
@@ -25,7 +35,17 @@ function Navbar() {
     },
   ];
 
+  const token = getToken();
+
   const closeMenu = () => setMenuOpen(false);
+
+  const toggleUserMenu = () => setUserMenu(!userMenu);
+
+  const handleLogout = () => {
+    removeToken();
+    removeUser();
+    Navigate("/login");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-black/5 bg-[#f5f5f5] backdrop-blur-sm">
@@ -55,20 +75,71 @@ function Navbar() {
           ))}
         </ul>
 
-          <div className="hidden items-center gap-4 md:flex">
-            <Link
-              to="/login"
-              className="text-[15px] font-medium text-[#1f2029]"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="rounded-full bg-[#fb6d56] px-4 py-2 text-[15px] font-semibold text-white"
-            >
-              Register
-            </Link>
-          </div>
+          {token ? (
+            <div className="hidden items-center gap-4 md:flex">
+              <div
+                onClick={toggleUserMenu}
+                className="relative flex items-center gap-2 text-[15px] font-medium text-[#1f2029] bg-transparent border-none cursor-pointer"
+              >
+                {user?.name}
+                <img className="w-8 h-8 rounded-full object-cover" src={user?.avatar} alt={user?.name} />
+              </div>
+
+              {userMenu && (
+                <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-black/5 bg-white/80 p-2 shadow-[0_20px_80px_-30px_rgba(124,92,255,0.35)] backdrop-blur-sm">
+                  <Link
+                    onClick={toggleUserMenu}
+                    className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
+                    to="/student"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    onClick={toggleUserMenu}
+                    className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
+                    to="/student/my-courses"
+                  >
+                    My Courses
+                  </Link>
+                  <Link
+                    onClick={toggleUserMenu}
+                    className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
+                    to="/student/certificates"
+                  >
+                    Certificates
+                  </Link>
+                  <Link
+                    onClick={toggleUserMenu}
+                    className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
+                    to="/student/settings"
+                  >
+                    Settings
+                  </Link>
+                  <button
+                    className="w-full text-left border-t border-black/5 rounded-lg px-3 py-3 text-[15px] font-medium hover:text-[#fb6d56]/70 transition-all duration-3000 ease-in-out cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="hidden items-center gap-4 md:flex">
+              <Link
+                to="/login"
+                className="text-[15px] font-medium text-[#1f2029]"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="rounded-full bg-[#fb6d56] px-4 py-2 text-[15px] font-semibold text-white"
+              >
+                Register
+              </Link>
+            </div>
+          )}
 
         <button
           type="button"
@@ -124,4 +195,3 @@ function Navbar() {
   );
 }
 
-export default Navbar;

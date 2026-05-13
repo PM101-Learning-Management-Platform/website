@@ -1,3 +1,5 @@
+import type { User } from "../context/AuthContext";
+
 // set token in local storage after login
 export const setToken = (token: string) => {
   localStorage.setItem("token", token);
@@ -11,4 +13,17 @@ export const getToken = () => {
 // remove token from local storage
 export const removeToken = () => {
   localStorage.removeItem("token");
+  window.location.href = "/login";
+};
+
+export const setUser = (user: User) => {
+  localStorage.setItem("user", JSON.stringify(user));
+};
+
+export const getUser = () => {
+  return JSON.parse(localStorage.getItem("user") || "{}");
+};
+
+export const removeUser = () => {
+  localStorage.removeItem("user");
 };

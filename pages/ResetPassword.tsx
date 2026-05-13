@@ -81,7 +81,7 @@ export default function ResetPassword() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && <p className="text-sm text-red-600">{error}</p>}
-          <div>
+          <div className="space-y-1.5">
             <label
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-2"
@@ -105,8 +105,8 @@ export default function ResetPassword() {
               >
                 {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
               </div>
-              <p className="text-xs text-gray-600">Minimum 6 characters</p>
             </div>
+            <p className="text-xs text-gray-600">Minimum 6 characters</p>
           </div>
 
           <div>

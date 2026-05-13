@@ -22,7 +22,6 @@ export default function ForgotPassword() {
       .catch((err) => {
         setError(err.message);
       });
-    setIsSubmitted(true);
   };
 
   return (
