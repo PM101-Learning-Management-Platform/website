@@ -29,25 +29,27 @@ const App = () => {
       </div>
       <Routes>
         <Route path="/" element={<PublicLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/restore-account" element={<RestoreAccount />} />
           <Route index element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/courses" element={<CoursesPage />} />
-          <Route path="/courses/:id" element={<CourseDetails />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
+          <Route path="restore-account" element={<RestoreAccount />} />
+          <Route path="about" element={<About />} />
+          <Route path="courses" element={<CoursesPage />} />
+          <Route path="courses/:id" element={<CourseDetails />} />
+          <Route path="contact" element={<Contact />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
-        <Route path="/student" element={<StudentLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="my-courses" element={<MyCourses />} />
-          <Route path="certificates" element={<Certificates />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
+          <Route path="student" element={<StudentLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="my-courses" element={<MyCourses />} />
+            <Route path="certificates" element={<Certificates />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Route>
+
       </Routes>
     </div>
   );
