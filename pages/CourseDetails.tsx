@@ -6,18 +6,16 @@ import {
   PlayCircle,
   Lock,
   BookOpen,
-  X,
-  Loader2,
 } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import type { Course, Lesson } from "../types/courses";
+import type { Course } from "../types/courses";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getCourseById } from "../redux/slices/courses";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import { courseEnrollment } from "../api/enrollment";
-import { getLessons } from "../api/lessons";
+import { getUserEnrolledCourses } from "../redux/slices/enrolledCourses";
 
 function formatPrice(course: Course) {
   if (course.price == 0) return "Free";
@@ -29,24 +27,16 @@ export default function CourseDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { course, error, loading } = useAppSelector((state) => state.courses);
-  const [previewLesson, setPreviewLesson] = useState<Lesson | null>(null);
-  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const { enrolledCourses } = useAppSelector((state) => state.enrolledCourses);
 
   useEffect(() => {
     if (id) dispatch(getCourseById(id));
+    dispatch(getUserEnrolledCourses());
   }, [id, dispatch]);
 
-  const handlePreviewClick = async (lessonId: string) => {
-    setIsPreviewLoading(true);
-    try {
-      const data = await getLessons(id!, lessonId);
-      setPreviewLesson(data.data || data);
-    } catch (err) {
-      console.error("Failed to fetch lesson preview", err);
-    } finally {
-      setIsPreviewLoading(false);
-    }
-  };
+  const isEnrolled = enrolledCourses.some(
+    (enrollment) => enrollment.courseId === id,
+  );
 
   const handleEnroll = async () => {
     try {
@@ -125,13 +115,19 @@ export default function CourseDetails() {
                 <ArrowLeft size={18} />
                 Back to courses
               </Link>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-xl bg-[#7c5cff] px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#6e50ff] sm:text-[15px]"
-                onClick={handleEnroll}
-              >
-                Enroll now
-              </button>
+              {!isEnrolled ? (
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-xl bg-[#7c5cff] px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#6e50ff] sm:text-[15px]"
+                  onClick={handleEnroll}
+                >
+                  Enroll now
+                </button>
+              ) : (
+                <div className="inline-flex items-center justify-center rounded-xl bg-green-900/50 px-6 py-3 text-center text-sm font-semibold text-white shadow-sm sm:text-[15px] cursor-not-allowed">
+                  Enrolled
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -267,132 +263,91 @@ export default function CourseDetails() {
             </div>
           </div>
 
-          <div className="grid gap-4">
-            {course.modules?.length ? (
-              course.modules.map((module, index) => (
-                <div
-                  key={module.id}
-                  className="group overflow-hidden rounded-3xl border border-black/5 bg-white/80 transition-all hover:border-[#7c5cff]/20 hover:shadow-md"
-                >
-                  <div className="flex w-full items-center justify-between p-5 text-left sm:p-6">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0A033C]/5 text-[#0A033C] transition-colors group-hover:bg-[#7c5cff]/10 group-hover:text-[#7c5cff]">
-                        <span className="text-sm font-bold">
-                          {(index + 1).toString().padStart(2, "0")}
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-[#0A033C]">
-                          {module.title}
-                        </h3>
-                        <p className="text-xs font-medium text-[#5D5A6F]">
-                          {module.lessons?.length || 0} Lessons •{" "}
-                          {module.description.slice(0, 60)}...
-                        </p>
+          {isEnrolled ? (
+            <div className="grid gap-4">
+              {course.modules?.length ? (
+                course.modules.map((module, index) => (
+                  <div
+                    key={module.id}
+                    className="group overflow-hidden rounded-3xl border border-black/5 bg-white/80 transition-all hover:border-[#7c5cff]/20 hover:shadow-md"
+                  >
+                    <div className="flex w-full items-center justify-between p-5 text-left sm:p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0A033C]/5 text-[#0A033C] transition-colors group-hover:bg-[#7c5cff]/10 group-hover:text-[#7c5cff]">
+                          <span className="text-sm font-bold">
+                            {(index + 1).toString().padStart(2, "0")}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-[#0A033C]">
+                            {module.title}
+                          </h3>
+                          <p className="text-xs font-medium text-[#5D5A6F]">
+                            {module.lessons?.length || 0} Lessons •{" "}
+                            {module.description.slice(0, 60)}...
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="border-t border-black/3 bg-white/40">
-                    {module.lessons?.map((lesson, lIndex) => (
-                      <div
-                        key={lesson.id}
-                        className="flex items-center justify-between border-b border-black/2 px-6 py-4 last:border-0 hover:bg-white/80 sm:px-10"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm border border-black/5 text-[#7c5cff]">
-                            <PlayCircle size={16} />
+                    <div className="border-t border-black/3 bg-white/40">
+                      {module.lessons?.map((lesson, lIndex) => (
+                        <div
+                          key={lesson.id}
+                          className="flex items-center justify-between border-b border-black/2 px-6 py-4 last:border-0 hover:bg-white/80 sm:px-10"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm border border-black/5 text-[#7c5cff]">
+                              <PlayCircle size={16} />
+                            </div>
+                            <span className="text-sm font-semibold text-[#5D5A6F] sm:text-[15px]">
+                              {lesson.title}
+                            </span>
                           </div>
-                          <span className="text-sm font-semibold text-[#5D5A6F] sm:text-[15px]">
-                            {lesson.title}
-                          </span>
+                          <div className="flex items-center gap-4">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#5D5A6F]/40">
+                              15:00
+                            </span>
+                            {lIndex === 0 && index === 0 ? (
+                              <Link
+                                to={`${lesson.videoUrl}`}
+                                target="_blank"
+                                className="rounded-lg bg-green-500/10 px-2 py-1 text-[10px] font-bold text-green-600 transition hover:bg-green-500/20 disabled:opacity-50"
+                              >
+                                PREVIEW
+                              </Link>
+                            ) : (
+                              <Lock size={14} className="text-[#5D5A6F]/30" />
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-[#5D5A6F]/40">
-                            15:00
-                          </span>
-                          {lIndex === 0 && index === 0 ? (
-                            <Link
-                              to={`${lesson.videoUrl}`}
-                              onClick={() => handlePreviewClick(lesson.id)}
-                              className="rounded-lg bg-green-500/10 px-2 py-1 text-[10px] font-bold text-green-600 transition hover:bg-green-500/20 disabled:opacity-50"
-                            >
-                              {isPreviewLoading ? (
-                                <Loader2 size={12} className="animate-spin" />
-                              ) : (
-                                "PREVIEW"
-                              )}
-                            </Link>
-                          ) : (
-                            <Lock size={14} className="text-[#5D5A6F]/30" />
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="rounded-3xl border border-dashed border-black/10 bg-white/40 py-16 text-center">
-                <p className="text-[#5D5A6F]">
-                  No modules available for this course yet.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Lesson Preview Modal */}
-      {previewLesson && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="flex items-center justify-between border-b border-black/5 p-6">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-[#7c5cff]">
-                  Lesson Preview
-                </p>
-                <h3 className="text-xl font-bold text-[#0A033C]">
-                  {previewLesson.title}
-                </h3>
-              </div>
-              <button
-                onClick={() => setPreviewLesson(null)}
-                className="rounded-full p-2 text-[#5D5A6F] hover:bg-black/5 transition"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <div className="p-6">
-              {previewLesson.videoUrl ? (
-                <div className="aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-inner">
-                  <iframe
-                    src={previewLesson.videoUrl}
-                    className="h-full w-full"
-                    allowFullScreen
-                    title={previewLesson.title}
-                  />
-                </div>
+                ))
               ) : (
-                <div className="prose prose-slate max-w-none">
-                  <p className="text-[#5D5A6F] leading-relaxed">
-                    {previewLesson.content ||
-                      "No content available for this preview."}
+                <div className="rounded-3xl border border-black/10 bg-white/40 py-16 text-center">
+                  <p className="text-[#5D5A6F]">
+                    No modules available for this course yet.
                   </p>
                 </div>
               )}
-              <div className="mt-8 flex justify-end">
-                <button
-                  onClick={() => setPreviewLesson(null)}
-                  className="rounded-xl bg-[#7c5cff] px-6 py-2 text-sm font-semibold text-white transition hover:bg-[#6e50ff]"
-                >
-                  Close Preview
-                </button>
-              </div>
             </div>
-          </div>
+          ) : (
+            <div className="rounded-3xl border border-black/10 bg-white/40 py-16 text-center">
+              <p className="text-[#5D5A6F]">
+                You need to enroll in this course to view the curriculum.
+              </p>
+              <button
+                onClick={() => handleEnroll()}
+                className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-[#fb6d56] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#f45f49] sm:text-[15px]"
+              >
+                Enroll Now
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </section>
     </div>
   );
 }
