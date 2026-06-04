@@ -15,16 +15,3 @@ export const createCourse = async (courseData: Course) => {
   const response = await axiosInstance.post(`/courses`, courseData);
   return response.data;
 };
-
-export const updateCourse = async (courseId: string, courseData: Course) => {
-  const response = await axiosInstance.patch(
-    `/courses/${courseId}`,
-    courseData,
-  );
-  return response.data;
-};
-
-export const deleteCourse = async (courseId: string) => {
-  const response = await axiosInstance.delete(`/courses/${courseId}`);
-  return response.data;
-};

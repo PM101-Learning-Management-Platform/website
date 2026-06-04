@@ -3,19 +3,20 @@ import {
   Clock3,
   Star,
   Users2,
+  Play,
   PlayCircle,
-  Lock,
   BookOpen,
 } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import type { Course } from "../types/courses";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getCourseById } from "../redux/slices/courses";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import { courseEnrollment } from "../api/enrollment";
 import { getUserEnrolledCourses } from "../redux/slices/enrolledCourses";
+import { markLessonComplete } from "../api/lessons";
 
 function formatPrice(course: Course) {
   if (course.price == 0) return "Free";
@@ -28,6 +29,7 @@ export default function CourseDetails() {
   const { id } = useParams();
   const { course, error, loading } = useAppSelector((state) => state.courses);
   const { enrolledCourses } = useAppSelector((state) => state.enrolledCourses);
+  const [lessonId, setLessonId] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) dispatch(getCourseById(id));
@@ -44,6 +46,15 @@ export default function CourseDetails() {
       navigate(`/student/my-courses`);
     } catch {
       <ErrorMessage message="Error enrolling in course!" />;
+    }
+  };
+
+  const handleCompleteLesson = async () => {
+    try {
+      await markLessonComplete(id!, lessonId!);
+      setLessonId(null);
+    } catch {
+      <ErrorMessage message="Error Occured, Try again!" />;
     }
   };
 
@@ -118,7 +129,7 @@ export default function CourseDetails() {
               {!isEnrolled ? (
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center rounded-xl bg-[#7c5cff] px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#6e50ff] sm:text-[15px]"
+                  className="inline-flex bg-[#fb6d56] text-white items-center justify-center rounded-xl px-6 py-3 text-center text-sm font-semibold shadow-sm transition hover:bg-[#6e50ff] sm:text-[15px]"
                   onClick={handleEnroll}
                 >
                   Enroll now
@@ -291,37 +302,45 @@ export default function CourseDetails() {
                     </div>
 
                     <div className="border-t border-black/3 bg-white/40">
-                      {module.lessons?.map((lesson, lIndex) => (
-                        <div
-                          key={lesson.id}
-                          className="flex items-center justify-between border-b border-black/2 px-6 py-4 last:border-0 hover:bg-white/80 sm:px-10"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm border border-black/5 text-[#7c5cff]">
-                              <PlayCircle size={16} />
+                      {module.lessons?.map((lesson) => (
+                        <div key={lesson.id}>
+                          <div className="flex items-center justify-between border-b border-black/2 px-6 py-4 last:border-0 hover:bg-white/80 sm:px-10">
+                            <div className="flex items-center gap-4">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm border border-black/5 text-[#7c5cff]">
+                                <PlayCircle size={16} />
+                              </div>
+                              <span className="text-sm font-semibold text-[#5D5A6F] sm:text-[15px]">
+                                {lesson.title}
+                              </span>
                             </div>
-                            <span className="text-sm font-semibold text-[#5D5A6F] sm:text-[15px]">
-                              {lesson.title}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#5D5A6F]/40">
-                              15:00
-                            </span>
-                            {lIndex === 0 && index === 0 ? (
-                              <Link
-                                to={`${lesson.videoUrl}`}
-                                target="_blank"
-                                className="rounded-lg bg-green-500/10 px-2 py-1 text-[10px] font-bold text-green-600 transition hover:bg-green-500/20 disabled:opacity-50"
-                              >
-                                PREVIEW
-                              </Link>
-                            ) : (
-                              <Lock size={14} className="text-[#5D5A6F]/30" />
-                            )}
+                            <div className="flex flex-col items-end gap-4">
+                              <span className="text-[11px] font-bold uppercase tracking-wider text-[#5D5A6F]/40">
+                                15:00
+                              </span>
+                              <div className="flex items-center">
+                                <Link
+                                  to={`${lesson.videoUrl}`}
+                                  onClick={handleCompleteLesson}
+                                  target="_blank"
+                                  className="rounded-lg bg-green-500/10 px-2 py-1 text-[10px] font-bold text-green-600 transition hover:bg-green-500/20 disabled:opacity-50"
+                                >
+                                  <Play size={16} />
+                                </Link>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
+                    </div>
+                    <div className="flex items-center justify-end p-4">
+                      {module.assessment && (
+                        <Link
+                          to={`/student/assessments/${module.assessment.id}/take`}
+                          className="rounded-lg bg-[#fb6d56] px-2 py-1 text-[10px] text-white transition hover:bg-[#f45f49]"
+                        >
+                          TAKE ASSESSMENT
+                        </Link>
+                      )}
                     </div>
                   </div>
                 ))

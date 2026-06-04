@@ -130,8 +130,8 @@ export default function Footer() {
         </Link>
 
           <div className="flex items-center flex-wrap justify-between gap-5 mb-8">
-            <a
-              href="https://www.facebook.com/mohamed.elkinany.3910/"
+            <Link
+              to="https://www.facebook.com/mohamed.elkinany.3910/"
               target="_blank"
               className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm"
             >
@@ -140,16 +140,16 @@ export default function Footer() {
                 strokeWidth={0}
                 size={22}
               />
-            </a>
-            <a
-              href="https://www.instagram.com/mohamed_elkinany1/"
+            </Link>
+            <Link
+              to="https://www.instagram.com/mohamed_elkinany1/"
               target="_blank"
               className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm"
             >
               <FaInstagram size={18} strokeWidth={2.5} />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/mohamed-elkinany-3659b5281"
+            </Link>
+            <Link
+              to="https://www.linkedin.com/in/mohamed-elkinany-3659b5281"
               target="_blank"
               className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm"
             >
@@ -158,9 +158,9 @@ export default function Footer() {
                 strokeWidth={0}
                 size={22}
               />
-            </a>
-            <a
-              href="https://wa.me/201128819687"
+            </Link>
+            <Link
+              to="https://wa.me/201128819687"
               target="_blank"
               className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm"
             >
@@ -169,7 +169,7 @@ export default function Footer() {
                 strokeWidth={20}
                 size={22}
               />
-            </a>
+            </Link>
           </div>
         </div>
 

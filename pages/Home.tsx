@@ -98,7 +98,7 @@ export default function Home() {
           high-definition.
         </p>
         <Link to="/courses">
-          <button className="w-full max-w-sm rounded-2xl px-6 py-3 text-lg font-semibold text-white shadow-sm transition sm:w-auto sm:py-4 sm:text-xl md:text-2xl">
+          <button className="w-full bg-[#fb6d56] max-w-sm rounded-2xl px-6 py-3 text-lg font-semibold text-white shadow-sm transition sm:w-auto sm:py-4 sm:text-xl md:text-2xl">
             Visit Courses
           </button>
         </Link>
@@ -118,7 +118,7 @@ export default function Home() {
               <button
                 key={link.id}
                 type="button"
-                className="flex w-full items-center justify-start gap-3 rounded-2xl bg-white p-4 text-left shadow-lg transition hover:-translate-y-1 hover:shadow-2xl md:flex-1 md:gap-2 lg:p-3"
+                className="flex bg-[#fb6d56] text-white w-full items-center justify-start gap-3 rounded-2xl p-4 text-left shadow-lg transition hover:-translate-y-1 hover:shadow-2xl md:flex-1 md:gap-2 lg:p-3"
               >
                 <span className="shrink-0 rounded-md bg-[#FF6652]/10 p-2">
                   {link.icon}

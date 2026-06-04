@@ -1,4 +1,4 @@
-import { setToken, setUser } from "../lib/setToken";
+import { setToken, storeUser } from "../lib/setToken";
 import axiosInstance from "../lib/axiosInstance";
 import axios from "axios";
 
@@ -28,7 +28,7 @@ export function Auth() {
     );
     const data = response.data;
     setToken(data.data.accessToken);
-    setUser(data.data.user);
+    storeUser(data.data.user);
     return data;
   };
 

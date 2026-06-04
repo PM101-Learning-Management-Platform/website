@@ -3,8 +3,6 @@ import {
   getCourses,
   getCourse,
   createCourse,
-  updateCourse,
-  deleteCourse,
 } from "../../api/courses";
 import type { Course } from "../../types/courses";
 
@@ -26,20 +24,6 @@ export const createNewCourse = createAsyncThunk(
   "courses/createNewCourse",
   async (courseData: Course) => {
     return await createCourse(courseData);
-  },
-);
-
-export const updateCourseById = createAsyncThunk(
-  "courses/updateCourseById",
-  async (courseData: Course) => {
-    return await updateCourse(courseData.id, courseData);
-  },
-);
-
-export const deleteCourseById = createAsyncThunk(
-  "courses/deleteCourseById",
-  async (courseId: string) => {
-    return await deleteCourse(courseId);
   },
 );
 
@@ -76,21 +60,6 @@ const coursesSlice = createSlice({
       .addCase(createNewCourse.fulfilled, (state, action) => {
         state.loading = false;
         state.courses.push(action.payload);
-      })
-
-      .addCase(updateCourseById.fulfilled, (state, action) => {
-        state.loading = false;
-        const index = state.courses.findIndex(
-          (c) => c.id === action.payload.id,
-        );
-        if (index !== -1) {
-          state.courses[index] = action.payload;
-        }
-      })
-
-      .addCase(deleteCourseById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.courses = state.courses.filter((c) => c.id !== action.meta.arg);
       })
 
       .addMatcher(
