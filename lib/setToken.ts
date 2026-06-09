@@ -16,7 +16,7 @@ export const removeToken = () => {
   window.location.href = "/login";
 };
 
-export const setUser = (user: User) => {
+export const storeUser = (user: User) => {
   localStorage.setItem("user", JSON.stringify(user));
 };
 

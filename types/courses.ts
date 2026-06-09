@@ -1,3 +1,5 @@
+import type { Assessment } from "./assessment";
+
 export type Lesson = {
   id: string;
   moduleId: string;
@@ -17,6 +19,7 @@ export type Module = {
   orderIndex: number;
   createdAt: string;
   updatedAt: string;
+  assessment: Assessment;
   lessons: Lesson[];
 };
 
@@ -29,10 +32,9 @@ export type Course = {
   duration: number;
   level: string;
   price: number;
-  lessons: [];
+  modules: Module[];
   studentsCount: number;
   rating: number;
   createdAt: string;
   updatedAt: string;
-  modules: Module[];
 };

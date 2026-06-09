@@ -137,7 +137,7 @@ export default function Register() {
                 onClick={toggleShowConfirmPassword}
                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#8b8aa1]"
               >
-                {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
+                {showConfirmPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
               </div>
             </div>
             {errors.confirmPassword && (

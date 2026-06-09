@@ -14,7 +14,7 @@ export default function Pagination({
       {pages.map((page) => (
         <button
           onClick={() => handlePageChange(page)}
-          className="p-3 border-2 rounded-lg border-[#fb6d56]"
+          className="p-3 bg-[#fb6d56] text-white rounded-xl"
           key={page}
         >
           {page}

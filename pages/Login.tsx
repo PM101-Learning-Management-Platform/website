@@ -4,24 +4,23 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema,type loginFormData } from "../validators/loginValidator";
 import { Auth } from "../api/auth";
-import { setToken, setUser } from "../lib/setToken";
+import { setToken, storeUser } from "../lib/setToken";
 import { Eye, EyeClosed } from "lucide-react";
-// import { useContext } from "react";
-// import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import avatar from "../src/assets/images/avatar.jpg";
 
 export default function Login() {
   const Navigate = useNavigate();
   const { Login } = Auth();
 
-  // Password Visibility
   const [showPassword, setShowPassword] = useState(false);
 
-  // const context = useContext(AuthContext);
-  // if (!context) {
-  //   throw new Error("Auth hook must be used within an AuthProvider");
-  // }
-  // const { setUser } = context;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("Auth hook must be used within an AuthProvider");
+  }
+  const { setUser } = context;
 
   const {
     register,
@@ -48,13 +47,14 @@ export default function Login() {
       }
       setToken(res.data.accessToken);
       const user = res.data.user;
-      setUser({
+      storeUser({
         email: user.email,
         name: user.name,
         id: user.id,
         role: user.role,
         avatar: user.avatar || avatar,
       });
+      setUser(user);
       Navigate("/");
     } catch {
       setError("email", { message: "Invalid email or password" });

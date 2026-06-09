@@ -55,12 +55,12 @@ export default function About() {
             can apply immediately.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-            <button className="inline-flex items-center justify-center rounded-xl px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-[#6e50ff] sm:text-[15px]">
+            <button className="inline-flex bg-[#fb6d56] items-center justify-center rounded-xl px-6 py-3 text-center text-sm font-semibold text-white shadow-sm sm:text-[15px]">
               <Link to="/courses">Explore courses</Link>
             </button>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center rounded-xl border border-[#0A033C]/15 bg-white/80 px-6 py-3 text-center text-sm font-semibold text-[#0A033C] transition hover:bg-white sm:text-[15px]"
+              className="inline-flex items-center justify-center rounded-xl border border-[#0A033C]/15 bg-white/80 px-6 py-3 text-center text-sm font-semibold text-[#0A033C] sm:text-[15px]"
             >
               Contact us
             </Link>

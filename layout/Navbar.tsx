@@ -2,20 +2,22 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../src/assets/images/Logo.png";
-// import { useContext } from "react";
-// import { AuthContext } from "../context/AuthContext";
-import { getToken, removeToken, getUser, removeUser } from "../lib/setToken";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { getToken, removeToken, removeUser } from "../lib/setToken";
 
 export default function Navbar() {
   const Navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
-  // const context = useContext(AuthContext);
-  const user = getUser();
-  // if (!context) {
-  //   throw new Error("Navbar must be used within an AuthProvider");
-  // }
-  // const { setUser } = context;
+  const token = getToken();
+  const context = useContext(AuthContext);
+  
+  if (!context) {
+    throw new Error("Navbar must be used within an AuthProvider");
+  }
+  const { user } = context;
+  
   const navLinks = [
     {
       name: "Home",
@@ -34,8 +36,6 @@ export default function Navbar() {
       path: "/contact",
     },
   ];
-
-  const token = getToken();
 
   const closeMenu = () => setMenuOpen(false);
   const closeUserMenu = () => setUserMenu(false);
@@ -111,9 +111,23 @@ export default function Navbar() {
                 <Link
                   onClick={toggleUserMenu}
                   className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
+                  to="/student/assessment"
+                >
+                  Assessments
+                </Link>
+                <Link
+                  onClick={toggleUserMenu}
+                  className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
                   to="/student/certificates"
                 >
                   Certificates
+                </Link>
+                <Link
+                  onClick={toggleUserMenu}
+                  className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
+                  to="/student/profile"
+                >
+                  Profile
                 </Link>
                 <Link
                   onClick={toggleUserMenu}
@@ -123,7 +137,7 @@ export default function Navbar() {
                   Settings
                 </Link>
                 <button
-                  className="w-full text-center border-t border-black/5 rounded-lg px-3 py-3 text-[15px] font-medium hover:text-[#fb6d56]/70 transition-all duration-3000 ease-in-out cursor-pointer"
+                  className="w-full bg-[#fb6d56] text-white text-center border-t border-black/5 rounded-lg px-3 py-3 text-[15px] font-medium "
                   onClick={handleLogout}
                 >
                   Logout
@@ -212,6 +226,13 @@ export default function Navbar() {
                 My Courses
               </Link>
               <Link
+                to="/student/assessment"
+                className="block rounded-lg px-3 py-3 text-[15px] font-semibold"
+                onClick={closeMenu}
+              >
+                Assessments
+              </Link>
+              <Link
                 to="/student/certificates"
                 className="block rounded-lg px-3 py-3  text-[15px] font-semibold"
                 onClick={closeMenu}
@@ -226,7 +247,7 @@ export default function Navbar() {
                 Settings
               </Link>
               <button
-                className="w-full border-t text-center border-black/5 rounded-lg px-3 py-3 text-[15px] font-medium hover:text-[#fb6d56]/70 transition-all duration-3000 ease-in-out cursor-pointer"
+                className="w-full border-t bg-[#fb6d56] text-center border-black/5 rounded-lg px-3 py-3 text-[15px] font-medium"
                 onClick={handleLogout}
               >
                 Logout

@@ -122,7 +122,7 @@ export default function Settings() {
 
             <button
               type="button"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-[#7c5cff] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#6e50ff]"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-[#fb6d56] px-4 py-2.5 text-sm font-semibold text-white"
             >
               Save preferences
             </button>

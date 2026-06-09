@@ -122,7 +122,7 @@ export default function RestoreAccount() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#fb6d56] text-white py-3 rounded-lg font-semibold"
             >
               {isSubmitting ? "Sending..." : "Send Restoration Code"}
             </button>

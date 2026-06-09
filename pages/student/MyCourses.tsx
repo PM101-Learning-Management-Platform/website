@@ -61,7 +61,7 @@ export default function MyCourses() {
             onClick={() => setFilter(key)}
             className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
               filter === key
-                ? "bg-[#7c5cff] text-white shadow-sm"
+                ? "bg-[#fb6d56] text-white shadow-sm"
                 : "border border-black/10 bg-white/80 text-[#0A033C] hover:bg-white"
             }`}
           >
@@ -80,7 +80,7 @@ export default function MyCourses() {
           </p>
           <Link
             to="/courses"
-            className="mt-4 inline-flex items-center justify-center rounded-xl bg-[#7c5cff] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#6e50ff]"
+            className="mt-4 inline-flex items-center justify-center rounded-xl bg-[#fb6d56] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#6e50ff]"
           >
             Go to courses
           </Link>
@@ -90,6 +90,9 @@ export default function MyCourses() {
           {filtered.map((course) => (
             <li key={course.id}>
               <article className="group flex h-full flex-col rounded-2xl border border-black/5 bg-white/80 p-5 shadow-sm backdrop-blur-sm transition hover:shadow-[0_20px_80px_-45px_rgba(124,92,255,0.35)]">
+              <div className="flex items-center justify-between mb-3">
+                <img src={course.course?.thumbnailUrl || ""} alt={course.course?.title} className="rounded-lg w-full h-[200px] object-cover" />
+              </div>
                 <div className="flex items-start justify-between gap-2">
                   <span className="inline-flex items-center rounded-lg bg-[#fb6d56]/10 px-2 py-1 text-[11px] font-bold text-[#fb6d56]">
                     {course.course?.level}
@@ -135,7 +138,7 @@ export default function MyCourses() {
                   </Link>
                   <Link
                     to={`/courses/${course.course.id}`}
-                    className="inline-flex flex-1 items-center justify-center rounded-xl bg-[#7c5cff] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#6e50ff]"
+                    className="inline-flex flex-1 items-center justify-center rounded-xl bg-[#fb6d56] px-4 py-2.5 text-sm font-semibold text-white"
                   >
                     {course.status === "completed" ? "Review" : "Continue"}
                   </Link>
