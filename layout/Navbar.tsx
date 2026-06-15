@@ -2,22 +2,19 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../src/assets/images/Logo.png";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { getToken, removeToken, removeUser } from "../lib/setToken";
+import { getToken, getUser, removeToken, removeUser } from "../lib/setToken";
 
 export default function Navbar() {
   const Navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const token = getToken();
-  const context = useContext(AuthContext);
-  
-  if (!context) {
-    throw new Error("Navbar must be used within an AuthProvider");
+  const user = getUser();
+
+  if(user && user.avatar === null) {
+    user.avatar = "";
   }
-  const { user } = context;
-  
+
   const navLinks = [
     {
       name: "Home",
@@ -50,7 +47,7 @@ export default function Navbar() {
 
   return (
     <nav className="border-b border-black/5 bg-[#f5f5f5] backdrop-blur-sm text-center">
-      <div className="flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
+      <div className="flex max-w-7xl mx-auto items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
         <Link
           to="/"
           className="flex shrink-0 items-center gap-2"
@@ -79,7 +76,7 @@ export default function Navbar() {
         </ul>
 
         {token ? (
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-4 md:flex relative">
             <div
               onClick={toggleUserMenu}
               className="relative flex items-center gap-2 text-[15px] font-medium text-[#1f2029] bg-transparent border-none cursor-pointer"

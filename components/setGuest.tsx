@@ -10,7 +10,7 @@ export default function SetGuest() {
         if (user.role === 'admin') {
             return <Navigate to="/admin" replace />;
         }
-        return <Navigate to="student" replace />;
+        return <Navigate to="/student" replace />;
     }
 
     return <Outlet />;

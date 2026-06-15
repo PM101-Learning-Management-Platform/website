@@ -10,7 +10,7 @@ export default function PublicLayout() {
         <Navbar />
         <LearningPath />
       </div>
-      <main className="relative mt-25 w-full flex-1">
+      <main className="relative w-full flex-1 px-4 pt-25">
         <Outlet />
       </main>
       <Footer />

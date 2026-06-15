@@ -1,16 +1,20 @@
 import type { User } from "../context/AuthContext";
 
-// set token in local storage after login
+interface UpdateUser {
+  id: string;
+  name?: string;
+  date_of_birth?: string;
+  avatar?: string;
+}
+
 export const setToken = (token: string) => {
   localStorage.setItem("token", token);
 };
 
-// get token from local storage
 export const getToken = () => {
   return localStorage.getItem("token");
 };
 
-// remove token from local storage
 export const removeToken = () => {
   localStorage.removeItem("token");
   window.location.href = "/login";
@@ -26,4 +30,8 @@ export const getUser = () => {
 
 export const removeUser = () => {
   localStorage.removeItem("user");
+};
+
+export const updateUser = (user: UpdateUser) => {
+  localStorage.setItem("user", JSON.stringify({...getUser(), ...user}));
 };

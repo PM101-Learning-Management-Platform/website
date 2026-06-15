@@ -9,11 +9,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import SuccessMessage from "../components/SuccessMessage";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function Register() {
   const { Register } = Auth();
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -36,10 +38,25 @@ export default function Register() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onsubmit: SubmitHandler<RegisterFormData> = (data) => {
-    Register(data);
-    setShowSuccess(true);
+  const onsubmit: SubmitHandler<RegisterFormData> = async (data) => {
+    try {
+      await Register({
+        ...data,
+        date_of_birth: new Date(data.date_of_birth).toISOString()
+      });
+      setShowSuccess(true);
+    } catch (err) {
+      if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError("Something went wrong, please try again.");
+  }
+    }
   };
+
+  if(error) {
+    return <ErrorMessage message={error} />
+  }
 
   return (
     <form
@@ -78,6 +95,38 @@ export default function Register() {
             />
             {errors.name && (
               <p className="text-red-500">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-[#0A033C]">
+              Date of birth
+            </label>
+            <input
+              type="date"
+              {...register("date_of_birth")}
+              className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
+            />
+            {errors.date_of_birth && (
+              <p className="text-red-500">{errors.date_of_birth.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-[#0A033C]">
+              Gender
+            </label>
+            <select
+              {...register("gender")}
+              autoComplete="gender"
+              className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
+            >
+              <option value="">Select gender</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+            </select>
+            {errors.gender && (
+              <p className="text-red-500">{errors.gender.message}</p>
             )}
           </div>
 

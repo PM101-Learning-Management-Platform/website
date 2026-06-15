@@ -6,6 +6,8 @@ export type User = {
   email: string;
   role: string;
   avatar: string;
+  date_of_birth: string;
+  gender: string;
 }
 
 interface AuthContextType {
