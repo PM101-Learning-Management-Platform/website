@@ -4,6 +4,8 @@ import axios from "axios";
 
 export type RegisterFormData = {
   name: string;
+  date_of_birth: string;
+  gender: string;
   email: string;
   password: string;
   confirmPassword: string;

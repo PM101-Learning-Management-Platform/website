@@ -52,6 +52,7 @@ export default function Assessment() {
       setCurrentQuestionIndex((prev) => prev - 1);
     }
   };
+  
   const setAnswer = (answer: "a" | "b" | "c" | "d") => {
     if (!currentQuestion) return;
     setAnswers((prev) => ({
@@ -60,6 +61,7 @@ export default function Assessment() {
     }));
   };
 
+  // get assessment
   useEffect(() => {
     if (!id) return;
     getAssessment(id).then((assessment) => {
@@ -68,6 +70,7 @@ export default function Assessment() {
     });
   }, [id]);
 
+  // set timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTime((prevTime) => prevTime - 1);
