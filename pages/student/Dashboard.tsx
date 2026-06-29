@@ -58,6 +58,8 @@ export default function Dashboard() {
     return <ErrorMessage message={error} />;
   }
 
+
+
   return (
     <div className="mx-auto w-full max-w-6xl">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

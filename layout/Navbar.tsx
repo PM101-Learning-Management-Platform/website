@@ -11,7 +11,7 @@ export default function Navbar() {
   const token = getToken();
   const user = getUser();
 
-  if(user && user.avatar === null) {
+  if (user && user.avatar === null) {
     user.avatar = "";
   }
 
@@ -75,26 +75,36 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {token ? (
+        {token && user ? (
           <div className="hidden items-center gap-4 md:flex relative">
-            <div
-              onClick={toggleUserMenu}
-              className="relative flex items-center gap-2 text-[15px] font-medium text-[#1f2029] bg-transparent border-none cursor-pointer"
-            >
-              {user?.name}
-              <img
-                className="w-8 h-8 rounded-full object-cover"
-                src={user?.avatar}
-                alt={user?.name}
-              />
-            </div>
+            {user?.role === "SUPER_ADMIN" ? (
+              <Link
+                to="http://localhost:5173/"
+                className="block rounded-lg bg-[#fb6d56] px-3 py-3 text-center text-[15px] font-semibold text-white"
+                onClick={closeMenu}
+              >
+                Admin Dashboard
+              </Link>
+            ) : (
+              <div
+                onClick={toggleUserMenu}
+                className="relative flex items-center gap-2 text-[15px] font-medium text-[#1f2029] bg-transparent border-none cursor-pointer"
+              >
+                {user?.name}
+                <img
+                  className="w-8 h-8 rounded-full object-cover"
+                  src={user?.avatar}
+                  alt={user?.name}
+                />
+              </div>
+            )}
 
             {userMenu && (
               <div className="absolute right-0 top-full z-60 mt-2 w-48 rounded-lg border border-black/5 bg-white/80 p-2 shadow-[0_20px_80px_-30px_rgba(124,92,255,0.35)] backdrop-blur-sm">
                 <Link
                   onClick={toggleUserMenu}
                   className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5 cursor-pointer"
-                  to="/student"
+                  to={"/student"}
                 >
                   Dashboard
                 </Link>
@@ -208,47 +218,59 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="mt-4 flex flex-col gap-2 border-t border-black/5 pt-4">
-              <Link
-                to="/student"
-                className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5"
-                onClick={closeMenu}
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/student/my-courses"
-                className="block rounded-lg px-3 py- text-[15px] font-semibold"
-                onClick={closeMenu}
-              >
-                My Courses
-              </Link>
-              <Link
-                to="/student/assessment"
-                className="block rounded-lg px-3 py-3 text-[15px] font-semibold"
-                onClick={closeMenu}
-              >
-                Assessments
-              </Link>
-              <Link
-                to="/student/certificates"
-                className="block rounded-lg px-3 py-3  text-[15px] font-semibold"
-                onClick={closeMenu}
-              >
-                Certificates
-              </Link>
-              <Link
-                to="/student/settings"
-                className="block rounded-lg  px-3 py-3  text-[15px] font-semibold "
-                onClick={closeMenu}
-              >
-                Settings
-              </Link>
-              <button
-                className="w-full border-t bg-[#fb6d56] text-center border-black/5 rounded-lg px-3 py-3 text-[15px] font-medium"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
+              {user?.role === "SUPER_ADMIN" ? (
+                <Link
+                  to="http://localhost:5173/"
+                  className="block rounded-lg bg-[#fb6d56] px-3 py-3 text-center text-[15px] font-semibold text-white"
+                  onClick={closeMenu}
+                >
+                  Admin Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to="/student"
+                    className="block rounded-lg px-3 py-3 text-[15px] font-medium hover:bg-black/5"
+                    onClick={closeMenu}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/student/my-courses"
+                    className="block rounded-lg px-3 py- text-[15px] font-semibold"
+                    onClick={closeMenu}
+                  >
+                    My Courses
+                  </Link>
+                  <Link
+                    to="/student/assessment"
+                    className="block rounded-lg px-3 py-3 text-[15px] font-semibold"
+                    onClick={closeMenu}
+                  >
+                    Assessments
+                  </Link>
+                  <Link
+                    to="/student/certificates"
+                    className="block rounded-lg px-3 py-3  text-[15px] font-semibold"
+                    onClick={closeMenu}
+                  >
+                    Certificates
+                  </Link>
+                  <Link
+                    to="/student/settings"
+                    className="block rounded-lg  px-3 py-3  text-[15px] font-semibold "
+                    onClick={closeMenu}
+                  >
+                    Settings
+                  </Link>
+                  <button
+                    className="w-full border-t bg-[#fb6d56] text-center border-black/5 rounded-lg px-3 py-3 text-[15px] font-medium"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>

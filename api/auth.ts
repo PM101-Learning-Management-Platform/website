@@ -1,6 +1,5 @@
 import { setToken, storeUser } from "../lib/setToken";
 import axiosInstance from "../lib/axiosInstance";
-import axios from "axios";
 
 export type RegisterFormData = {
   name: string;
@@ -12,9 +11,6 @@ export type RegisterFormData = {
 };
 
 export function Auth() {
-
-  const API_URL = import.meta.env.VITE_API_URL as string;
-
   // Register
   const Register = async (userData: RegisterFormData) => {
     const response = await axiosInstance.post(`/auth/register`, userData);
@@ -28,10 +24,10 @@ export function Auth() {
         withCredentials: true,
       }
     );
-    const data = response.data;
-    setToken(data.data.accessToken);
-    storeUser(data.data.user);
-    return data;
+    const data = response.data.data;
+    setToken(data.accessToken);
+    storeUser(data.user);
+    return response.data;
   };
 
   // forgot password
@@ -66,11 +62,7 @@ export function Auth() {
 
   // get refresh toke
   const refreshToken = async () => {
-  const response = await axios.post(
-    `${API_URL}/auth/refresh`,
-    {},
-    { withCredentials: true }
-  );
+  const response = await axiosInstance.post(`/auth/refresh`,{},{ withCredentials: true });
   const data = response.data;
   setToken(data.data.accessToken);
   return data;

@@ -18,30 +18,24 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
       originalRequest.url !== "/auth/refresh"
     ) {
       originalRequest._retry = true;
-
       try {
         const response = await axios.post(
           `${API_URL}/auth/refresh`,
           {},
           { withCredentials: true }
         );
-
-        const newToken = response.data.data.accessToken; 
+        const newToken = response.data.data.accessToken;
         setToken(newToken);
-
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
         return axiosInstance(originalRequest);
       } catch {
         setToken("");
-        // window.location.href = "/login";
       }
     }
 
