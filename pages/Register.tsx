@@ -44,6 +44,7 @@ export default function Register() {
         ...data,
         date_of_birth: new Date(data.date_of_birth).toISOString()
       });
+      console.log("date ",new Date(data.date_of_birth).toISOString());
       setShowSuccess(true);
     } catch (err) {
       if (err instanceof Error) {

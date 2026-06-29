@@ -1,17 +1,16 @@
-import { useContext } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function SetGuest() {
-    const authContext = useContext(AuthContext);
-    const { user } = authContext || {};
+  const authContext = useContext(AuthContext);
+  const { user } = authContext || {};
 
-    if (user) {
-        if (user.role === 'admin') {
-            return <Navigate to="/admin" replace />;
-        }
-        return <Navigate to="/student" replace />;
-    }
+  if (user?.role === "student") {
+    return <Navigate to="/student" replace />;
+  }else {
+    return <Navigate to="/" replace />;
+  }
 
-    return <Outlet />;
+  return <Outlet />;
 }

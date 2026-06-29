@@ -11,7 +11,8 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import type { Course } from "../types/courses";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getCourseById } from "../redux/slices/courses";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import { courseEnrollment } from "../api/enrollment";
@@ -36,7 +37,10 @@ export default function CourseDetails() {
     dispatch(getUserEnrolledCourses());
   }, [id, dispatch]);
 
-  const isEnrolled = enrolledCourses.some(
+  const authContext = useContext(AuthContext);
+  const { user } = authContext || {};
+
+  const isEnrolled = user?.role === 'admin' || user?.role === 'subAdmin' || enrolledCourses.some(
     (enrollment) => enrollment.courseId === id,
   );
 

@@ -1,13 +1,14 @@
 import { useState, useContext } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema,type loginFormData } from "../validators/loginValidator";
+import { loginSchema, type loginFormData } from "../validators/loginValidator";
 import { Auth } from "../api/auth";
 import { AuthContext } from "../context/AuthContext";
 import { setToken, storeUser } from "../lib/setToken";
 import { Eye, EyeClosed } from "lucide-react";
 import avatar from "../src/assets/images/avatar.jpg";
+import { isAxiosError } from "axios";
 
 export default function Login() {
   const { Login } = Auth();
@@ -36,7 +37,7 @@ export default function Login() {
       const res = await Login(data);
 
       if (!res) {
-        setError("email", { message: res.message });
+        setError("email", { message: "Invalid credentials" });
         return;
       }
       setToken(res.data.accessToken);
@@ -51,12 +52,15 @@ export default function Login() {
         gender: user.gender || "",
         created_at: user.created_at || "",
         updated_at: user.updated_at || "",
-      }
+      };
       storeUser(userData);
       setUser(userData);
       Navigate("/", { replace: true });
-    } catch {
-      setError("email", { message: "Invalid email or password" });
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const message = error.response?.data?.message || "Login failed";
+        setError("email", { message });
+      }
     }
   };
 
@@ -64,14 +68,18 @@ export default function Login() {
     <div className="mx-auto flex min-h-[calc(100vh-60px)] w-full max-w-7xl items-center justify-center px-4 py-10 sm:min-h-[calc(100vh-68px)] sm:px-6 sm:py-14 md:px-8 lg:px-20 lg:py-20">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md rounded-3xl border border-black/5 bg-white/80 p-6 shadow-[0_20px_80px_-30px_rgba(124,92,255,0.35)] backdrop-blur-sm sm:p-8">
+        className="w-full max-w-md rounded-3xl border border-black/5 bg-white/80 p-6 shadow-[0_20px_80px_-30px_rgba(124,92,255,0.35)] backdrop-blur-sm sm:p-8"
+      >
         <div className="mb-6">
           <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#0A033C] sm:text-3xl">
             Welcome back
           </h1>
           <p className="mt-2 text-sm text-[#5D5A6F]">
             New here?{" "}
-            <Link to="/register" className="font-semibold text-[#7c5cff] hover:underline">
+            <Link
+              to="/register"
+              className="font-semibold text-[#7c5cff] hover:underline"
+            >
               Create an account
             </Link>
           </p>
@@ -79,7 +87,9 @@ export default function Login() {
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-[#0A033C]">Email</label>
+            <label className="text-sm font-semibold text-[#0A033C]">
+              Email
+            </label>
             <input
               {...register("email")}
               placeholder="you@example.com"
@@ -90,7 +100,9 @@ export default function Login() {
           </div>
 
           <div className="relative space-y-1.5">
-            <label className="text-sm font-semibold text-[#0A033C]">Password</label>
+            <label className="text-sm font-semibold text-[#0A033C]">
+              Password
+            </label>
             <input
               {...register("password")}
               type={showPassword ? "text" : "password"}
@@ -99,13 +111,15 @@ export default function Login() {
               className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 pr-10 text-sm text-[#111] outline-none ring-0 placeholder:text-[#8b8aa1] focus:border-[#7c5cff]/40 focus:shadow-[0_0_0_4px_rgba(124,92,255,0.12)]"
             />
             <div
-                onClick={toggleShowPassword}
-                className="absolute right-3 top-1/2 cursor-pointer text-[#8b8aa1]"
-              >
-                {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
-              </div>
+              onClick={toggleShowPassword}
+              className="absolute right-3 top-1/2 cursor-pointer text-[#8b8aa1]"
+            >
+              {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
             </div>
-            {errors.email && <p className="text-red-500 text-center">{errors.email?.message}</p>}
+          </div>
+          {errors.email && (
+            <p className="text-red-500 text-center">{errors.email?.message}</p>
+          )}
 
           <button
             type="submit"
@@ -117,14 +131,20 @@ export default function Login() {
 
         <p className="mt-4 text-center text-sm text-[#5D5A6F]">
           Forgot your password?{" "}
-          <Link to="/forgot-password" className="font-semibold text-[#fb6d56] hover:underline">
+          <Link
+            to="/forgot-password"
+            className="font-semibold text-[#fb6d56] hover:underline"
+          >
             Reset it
           </Link>
         </p>
 
         <p className="mt-2 text-center text-sm text-[#5D5A6F]">
           Need to restore your account?{" "}
-          <Link to="/restore-account" className="font-semibold text-[#fb6d56] hover:underline">
+          <Link
+            to="/restore-account"
+            className="font-semibold text-[#fb6d56] hover:underline"
+          >
             Restore it
           </Link>
         </p>
