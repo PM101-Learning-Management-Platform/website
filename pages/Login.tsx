@@ -7,7 +7,7 @@ import { Auth } from "../api/auth";
 import { AuthContext } from "../context/AuthContext";
 import { setToken, storeUser } from "../lib/setToken";
 import { Eye, EyeClosed } from "lucide-react";
-import avatar from "../src/assets/images/avatar.jpg";
+import avatar from "https://res.cloudinary.com/davlsnwbk/image/upload/v1782917564/avatar_anqkwx.jpg";
 import { isAxiosError } from "axios";
 
 export default function Login() {
