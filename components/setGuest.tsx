@@ -8,8 +8,6 @@ export default function SetGuest() {
 
   if (user?.role === "student") {
     return <Navigate to="/student" replace />;
-  }else {
-    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
